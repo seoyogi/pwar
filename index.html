@@ -1,36 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>3D Game</title>
-  <style>
-    body { margin: 0; overflow: hidden; }
-  </style>
+<meta charset="utf-8">
+<title>WebCraft</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body { margin:0; overflow:hidden; touch-action:none; }
+#ui { position:fixed; bottom:10px; left:10px; color:white; }
+</style>
 </head>
 <body>
+<div id="ui">← → ↑ ↓</div>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer();
-  renderer.setSize(innerWidth, innerHeight);
-  document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x87ceeb);
 
-  const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(),
-    new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-  );
-  scene.add(cube);
+const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
 
-  camera.position.z = 3;
+// 地面ブロック
+const blockGeo = new THREE.BoxGeometry(1,1,1);
+const blockMat = new THREE.MeshLambertMaterial({color:0x55aa55});
 
-  function animate() {
-    requestAnimationFrame(animate);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    renderer.render(scene, camera);
-  }
-  animate();
+for(let x=-10;x<10;x++){
+ for(let z=-10;z<10;z++){
+  const b = new THREE.Mesh(blockGeo, blockMat);
+  b.position.set(x,0,z);
+  scene.add(b);
+ }
+}
+
+const light = new THREE.DirectionalLight(0xffffff,1);
+light.position.set(5,10,5);
+scene.add(light);
+
+camera.position.set(0,2,5);
+
+let move = {x:0,z:0};
+addEventListener("touchstart", e=>{
+ move.z = -0.1;
+});
+addEventListener("touchend", e=>{
+ move.z = 0;
+});
+
+function animate(){
+ requestAnimationFrame(animate);
+ camera.position.z += move.z;
+ renderer.render(scene,camera);
+}
+animate();
 </script>
 </body>
 </html>
