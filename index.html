@@ -1,84 +1,36 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>連打ゲーム</title>
-<style>
-  body {
-    margin: 0;
-    font-family: sans-serif;
-    background: linear-gradient(135deg, #111, #333);
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-
-  .box {
-    text-align: center;
-    background: rgba(0,0,0,0.6);
-    padding: 30px;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 400px;
-  }
-
-  button {
-    font-size: 24px;
-    padding: 20px;
-    width: 100%;
-    border-radius: 12px;
-    border: none;
-    background: #00ffcc;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-
-  button:active {
-    transform: scale(0.95);
-  }
-
-  .level {
-    font-size: 28px;
-    margin-top: 10px;
-  }
-
-  .msg {
-    margin-top: 15px;
-    opacity: 0.8;
-  }
-</style>
+  <meta charset="utf-8">
+  <title>3D Game</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+  </style>
 </head>
 <body>
-
-<div class="box">
-  <h1>連打ゲーム</h1>
-  <div class="level">Lv. <span id="level">1</span></div>
-  <div>連打数: <span id="count">0</span></div>
-  <button onclick="tap()">連打しろ</button>
-  <div class="msg" id="msg">指を信じろ</div>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
-let count = 0;
-let level = 1;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(innerWidth, innerHeight);
+  document.body.appendChild(renderer.domElement);
 
-function tap() {
-  count++;
-  document.getElementById("count").textContent = count;
+  const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(),
+    new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+  );
+  scene.add(cube);
 
-  if (count >= level * 10) {
-    level++;
-    count = 0;
-    document.getElementById("level").textContent = level;
-    document.getElementById("count").textContent = count;
-    document.getElementById("msg").textContent =
-      "レベルアップ！ Lv." + level;
+  camera.position.z = 3;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+    renderer.render(scene, camera);
   }
-}
+  animate();
 </script>
-
 </body>
 </html>
