@@ -2,57 +2,82 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>GitHub Issues Board</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>連打ゲーム</title>
 <style>
-body {
-  font-family: system-ui, sans-serif;
-  background: #0d1117;
-  color: #c9d1d9;
-  margin: 0;
-  padding: 20px;
-}
-.issue {
-  border: 1px solid #30363d;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 12px;
-}
-h2 { margin: 0 0 6px; font-size: 18px; }
-small { color: #8b949e; }
-a { color: #58a6ff; text-decoration: none; }
+  body {
+    margin: 0;
+    font-family: sans-serif;
+    background: linear-gradient(135deg, #111, #333);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .box {
+    text-align: center;
+    background: rgba(0,0,0,0.6);
+    padding: 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+  }
+
+  button {
+    font-size: 24px;
+    padding: 20px;
+    width: 100%;
+    border-radius: 12px;
+    border: none;
+    background: #00ffcc;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
+
+  .level {
+    font-size: 28px;
+    margin-top: 10px;
+  }
+
+  .msg {
+    margin-top: 15px;
+    opacity: 0.8;
+  }
 </style>
 </head>
 <body>
 
-<h1>📦 GitHub Issues 掲示板</h1>
-<p>Issueを立てるとここに表示される</p>
-
-<div id="list">読み込み中...</div>
+<div class="box">
+  <h1>連打ゲーム</h1>
+  <div class="level">Lv. <span id="level">1</span></div>
+  <div>連打数: <span id="count">0</span></div>
+  <button onclick="tap()">連打しろ</button>
+  <div class="msg" id="msg">指を信じろ</div>
+</div>
 
 <script>
-const user = "YOUR_GITHUB_NAME";
-const repo = "YOUR_REPO_NAME";
-const api = `https://api.github.com/repos/${user}/${repo}/issues`;
+let count = 0;
+let level = 1;
 
-fetch(api)
-  .then(res => res.json())
-  .then(data => {
-    const list = document.getElementById("list");
-    list.innerHTML = "";
-    data.forEach(issue => {
-      if(issue.pull_request) return; // PR除外
-      const div = document.createElement("div");
-      div.className = "issue";
-      div.innerHTML = `
-        <h2>${issue.title}</h2>
-        <small>👍 ${issue.reactions["+1"] || 0} / 💬 ${issue.comments}</small>
-        <p>${issue.body?.slice(0,200) || ""}</p>
-        <a href="${issue.html_url}" target="_blank">Issueを見る</a>
-      `;
-      list.appendChild(div);
-    });
-  });
+function tap() {
+  count++;
+  document.getElementById("count").textContent = count;
+
+  if (count >= level * 10) {
+    level++;
+    count = 0;
+    document.getElementById("level").textContent = level;
+    document.getElementById("count").textContent = count;
+    document.getElementById("msg").textContent =
+      "レベルアップ！ Lv." + level;
+  }
+}
 </script>
 
 </body>
